@@ -1,33 +1,34 @@
-## Project Progress Summary
+# House Prices: Advanced Regression Techniques
 
-This project explores the Kaggle **House Prices** dataset with a focus on building a clean, realistic machine learning workflow rather than leaderboard optimization.
-https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/overview
+Predicting house sale prices on the Kaggle [House Prices](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/overview) dataset: 1,460 houses sold in Ames, Iowa, described by 79 features.
 
-### What Has Been Done
+## What I've done so far
 
-- Built a **baseline Linear Regression** model
-- Evaluated models using **K-Fold Cross-Validation (RMSE)**
-- Implemented a full **scikit-learn Pipeline** to prevent data leakage
-- Handled missing values in a principled way:
-  - Numeric features → median or zero (when absence is meaningful)
-  - Categorical features → `"None"` for non-existent attributes, mode otherwise
-- Applied **One-Hot Encoding** for categorical variables
-- Added **Ridge Regression** and tuned the regularization parameter (`alpha`)
-- Extracted and analyzed model coefficients
-- Learned correct interpretation of coefficients using **reference categories**
+- **EDA:** distributions, missing values, correlations and skew.
+- **Baseline Linear Regression** (numeric features only): ~38.7k RMSE.
+- **Ridge with a preprocessing pipeline:** ~34k RMSE.
+- **Random Forest:** ~30k RMSE.
+- **Gradient Boosting:** ~27k RMSE (0.1315 on the log scale with a log target).
 
-### Key Observations
+## Latest update
 
-- Coefficients in one-hot encoded linear models are **relative to a reference category**
-- Sparse categorical features lead to unstable and unintuitive coefficients
-- Regularization reduces variance but does not fix model expressiveness
+I came back to the project after a long break. After looking at the Ridge residual plot, I decided to try Ridge again with the outliers removed and a log-transformed target.
 
-### Conclusion
+The residual plot showed:
+- The error grows as the price goes up.
+- There is a curve in the residuals.
+- One house got a predicted price of about $0.
+- The features are not additive: their effects are percentages of the price.
+- The outliers are obvious, and they hurt linear models.
 
-Even with proper preprocessing, encoding, regularization, and evaluation,  
-**Linear Regression performs poorly on this dataset (~34k RMSE)**.
+So I removed the outliers (`GrLivArea > 4000` and `SalePrice < 300000`) and applied a log transform to the target.
 
-This indicates a **model mismatch**, not an implementation issue.
+## Next steps
 
-➡️ Linear models are not suitable for this problem.  
-➡️ The next step is to explore **more expressive, non-linear models** (e.g. tree-based methods).
+- Compare the new Ridge results against the old ones.
+- Scale features and transform skewed ones.
+- Try Lasso and blend models.
+
+## Notebook
+
+`house_prices.ipynb`
